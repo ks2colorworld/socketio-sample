@@ -20,3 +20,5 @@ Here are some ideas to improve the application:
 - Show who’s online.
 - Add private messaging.
 - Share your improvements!
+
+- https://socket.io/how-to/use-with-express-session 

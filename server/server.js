@@ -15,9 +15,13 @@ io.on('connection',socket=>{
     });
     //  */
 
-    socket.on('send-message', (message)=>{
+    socket.on('send-message', (message, room)=>{
         // io.emit('receive-message', message); // >> send all
-        socket.broadcast.emit('receive-message', message); // >> send all except me
+        if (room === '') {
+            socket.broadcast.emit('receive-message', message); // >> send all except me
+        } else {
+            socket.to(room).emit('receive-message', message); // if room value === socket.id >> send private message 
+        }
 
         // console.log(message);
     });

@@ -63,7 +63,8 @@
     if (message === "") return
     displayMessage(message);
 
-    socket.emit('send-message', message);
+    // You connected with id: zuwQG7Pg9GpBQasSAAAJ << socket.id 
+    socket.emit('send-message', message, room); // add room value / if room value === socket.id >> send private message 
 
     input.value = "";
   });

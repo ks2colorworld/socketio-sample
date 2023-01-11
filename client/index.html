@@ -33,6 +33,20 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  var socket = io('http://localhost:3001');
+
+  socket.on('connect', ()=>{
+    displayMessage(`You connected with id: ${socket.id}`)
+  });
+
+  /* (1)
+  socket.emit('custom-event', 10, 'Hi', {a:'a'});
+  //  */
+
+  socket.on('receive-message', (message)=>{
+    displayMessage(message);
+  })
+  
   var messages = document.getElementById('messages');
   var form = document.getElementById('form');
   var input = document.getElementById('input');
@@ -48,6 +62,8 @@
 
     if (message === "") return
     displayMessage(message);
+
+    socket.emit('send-message', message);
 
     input.value = "";
   });

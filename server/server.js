@@ -25,4 +25,8 @@ io.on('connection',socket=>{
 
         // console.log(message);
     });
+
+    socket.on('join-room', (room)=>{
+        socket.join(room)
+    })
 })

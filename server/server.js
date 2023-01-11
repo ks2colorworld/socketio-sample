@@ -1,10 +1,36 @@
-const io = require('socket.io')(3001, {
+/* tutorial code - 1 
+const {instrument} = require("@socket.io/admin-ui")
+
+const io = require('socket.io')(3000, {
     cors: {
         origin:[
-            'http://localhost:8080'
+            'http://localhost:8080',
+            'https://admin.socket.io'
         ]
     }
 })
+// */
+
+// /* @socket.io/admin-ui 제공 code 
+// https://github.com/socketio/socket.io-admin-ui/#how-to-use
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
+
+const httpServer = createServer();
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: [
+        "http://localhost:8080",
+        "https://admin.socket.io"
+    ],
+    credentials: true
+  }
+});
+
+httpServer.listen(3000); // https://admin.socket.io 필수 설정 
+// */
 
 io.on('connection',socket=>{
     console.log(socket.id);
@@ -31,3 +57,9 @@ io.on('connection',socket=>{
         callbackFn(`Joined ${room}`);
     })
 })
+
+// /* https://admin.socket.io >> 상태확인 
+instrument(io, {
+    auth: false
+  });
+// */ 

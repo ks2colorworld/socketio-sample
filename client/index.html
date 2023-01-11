@@ -72,7 +72,9 @@
   joinRoomButton.addEventListener("click", () => {
     const room = roomInput.value
     console.log(room);
-    socket.emit('join-room', room);
+    socket.emit('join-room', room, (message)=>{
+      displayMessage(message);
+    });
   });
 
   function displayMessage (message) {

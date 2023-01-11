@@ -1,26 +1,16 @@
-const joinRoomButton = document.getElementById("room-button")
-const messageInput = document.getElementById("message-input")
-const roomInput = document.getElementById ("room-input")
-const form = document.getElementById("form")
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
 
-form.addEventListener("submit", e => {
-  e.preventDefault()
-  const message = messageInput.value
-  const room = roomInput.value
+const { Server } = require("socket.io");
+const io = new Server(server);
 
-  if (message === "") return
-  displayMessage(message)
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
 
-  messageInput.value = ""
-})
 
-joinRoomButton.addEventListener("click", () => {
-  const room = roomInput.value
-})
-
-function displayMessage (message) {
-  var item = document.createElement('li');
-  item.textContent = message;
-  document.getElementById("message-container").appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
-}
+server.listen(8080, () => {
+  console.log('listening on *:8080');
+});

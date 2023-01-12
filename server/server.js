@@ -72,6 +72,12 @@ io.on('connection',socket=>{
     });
 
     socket.on('join-room', (room, callbackFn)=>{
+        socket.rooms.forEach(r => {
+            // 본인의 아이디로 된 room은 제외
+            if (socket.id !== r) { 
+                socket.leave(r);
+            }
+        });
         socket.join(room);
         callbackFn(`Joined ${room}`);
     });

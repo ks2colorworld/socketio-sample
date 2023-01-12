@@ -33,7 +33,7 @@ httpServer.listen(3000); // https://admin.socket.io 필수 설정
 // */
 
 const userIo = io.of('/user')
-userIo.on('connection', socket => {
+userIo.on('connection', (socket) => {
     console.log('connected to user namespace with username '+socket.userName);
 })
 

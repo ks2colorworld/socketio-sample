@@ -34,6 +34,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io('http://localhost:3000');
+  var userSocket = io('http://localhost:3000/user');
 
   socket.on('connect', ()=>{
     displayMessage(`You connected with id: ${socket.id}`)

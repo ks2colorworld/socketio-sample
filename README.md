@@ -3,6 +3,7 @@
 https://socket.io/get-started/chat  
 
 ```
+cd _origin_tutorial
 node index.js
 ```
 
@@ -12,9 +13,22 @@ pm2 start index.js --watch
 
 # add other feature 
 
-- https://youtu.be/ZKEqqIO7n-k
+- 참고자료 : https://youtu.be/ZKEqqIO7n-k
+
+## 클라이언트 소스는 js 소스만 참고할 것 
+```
+cd client
+npm run dev
+```
+
+```
+cd server
+npm run dev
+```
+
 
 # Homework
+
 Here are some ideas to improve the application:
 
 - Broadcast a message to connected users when someone connects or disconnects.

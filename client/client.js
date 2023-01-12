@@ -1,6 +1,14 @@
+var qs = getQueryStringObject();
+var token = qs.token; 
+
 var socket = io('http://localhost:3000');
-var userSocket = io('http://localhost:3000/user'); // no token 
-// var userSocket = io('http://localhost:3000/user', {auth:{token:'TestToken'}}); // with token 
+// var userSocket = io('http://localhost:3000/user'); // no token 
+var userSocket = io('http://localhost:3000/user', {auth:{token:token}}); // with token 
+
+userSocket.on('connect', ()=>{
+  // displayMessage(`userSocket name: ${socket.userName}`)
+  console.log(userSocket);
+})
 
 userSocket.on('connect_error', (error) => {
   displayMessage(error)
@@ -57,31 +65,17 @@ form.addEventListener('submit', function (e) {
   input.value = "";
 });
 
-function socketEmitJoinRoom(room) {
-  console.log(room);
-  socket.emit('join-room', room, (message) => {
-    displayMessage(message);
-  });
-}
-
 joinRoomButton.addEventListener("click", () => {
   const room = roomInput.value;
   socketEmitJoinRoom(room);
 });
-
-function displayMessage(message) {
-  var item = document.createElement('li');
-  item.textContent = message;
-  messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
-}
 
 connectButton.addEventListener('click', () => {
   const token = tokenInput.value;
   if (token === '') {
     return;
   }
-
+  userSocket.disconnect();
   userSocket = io('http://localhost:3000/user', { auth: { token: token } });
 })
 
@@ -103,3 +97,34 @@ setInterval(() => {
   // volatile : 진행시간 계속 유지
   // socket.volatile.emit('ping', ++count)
 }, 1000);
+
+
+
+function getQueryStringObject() {
+  var a = window.location.search.substr(1).split('&');
+  if (a == "") return {};
+  var b = {};
+  for (var i = 0; i < a.length; ++i) {
+      var p = a[i].split('=', 2);
+      if (p.length == 1)
+          b[p[0]] = "";
+      else
+          b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+  }
+  return b;
+}
+
+
+function displayMessage(message) {
+  var item = document.createElement('li');
+  item.textContent = message;
+  messages.appendChild(item);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function socketEmitJoinRoom(room) {
+  console.log(room);
+  socket.emit('join-room', room, (message) => {
+    displayMessage(message);
+  });
+}

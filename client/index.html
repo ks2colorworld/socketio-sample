@@ -31,6 +31,13 @@
       <input id="room-input" autocomplete="off" /><button id="room-button">Join</button>
     </div>
 
+    <ui id="user-list"></ui>
+    <input id="token-input" type="text"/>
+    <button id="connect-button">connect</button>
+    <button id="disconnect-button">disconnect</button>
+    <button id="room-join-a-button">A</button>
+    <button id="room-join-b-button">B</button>
+    <button id="room-join-c-button">C</button>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io('http://localhost:3000');

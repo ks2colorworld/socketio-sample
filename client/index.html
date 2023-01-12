@@ -31,10 +31,23 @@
       <input id="room-input" autocomplete="off" /><button id="room-button">Join</button>
     </div>
 
+    <ui id="user-list"></ui>
+    <input id="token-input" type="text"/>
+    <button id="connect-button">connect</button>
+    <button id="disconnect-button">disconnect</button>
+    <button id="room-join-a-button">A</button>
+    <button id="room-join-b-button">B</button>
+    <button id="room-join-c-button">C</button>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io('http://localhost:3000');
+  // var userSocket = io('http://localhost:3000/user'); // no token 
+  var userSocket = io('http://localhost:3000/user', {auth:{token:'TestToken'}}); // with token 
 
+  userSocket.on('connect_error', (error)=>{ 
+    displayMessage(error)
+  })
+  
   socket.on('connect', ()=>{
     displayMessage(`You connected with id: ${socket.id}`)
   });
@@ -82,7 +95,26 @@
     item.textContent = message;
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
-}
+  }
+
+  // c : connect / d : disconnect
+  document.addEventListener('keydown',(e)=>{
+    if (e.target.matches('input')) {
+      return;
+    }
+    if (e.key === 'c') {
+      socket.connect();
+    }
+    if (e.key === 'd') {
+      socket.disconnect();
+    }
+  });
+
+  let count = 0;
+  setInterval(() => {
+    // volatile : 진행시간 계속 유지
+    socket.volatile.emit('ping', ++count)
+  }, 1000);
 </script>
 
   </body>

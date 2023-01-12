@@ -32,6 +32,25 @@ const io = new Server(httpServer, {
 httpServer.listen(3000); // https://admin.socket.io 필수 설정 
 // */
 
+const userIo = io.of('/user')
+userIo.on('connection', socket => {
+    console.log('connected to user namespace with username '+socket.userName);
+})
+
+userIo.use((socket,next)=>{
+    if(socket.handshake.auth.token){
+        socket.userName = getUserNameFromToken(socket.handshake.auth.token)
+        next()
+    }else{
+        next(new Error('please send token'))
+    }
+})
+
+function getUserNameFromToken(token) {
+    // access DB and check token if you need  
+    return token;
+}
+
 io.on('connection',socket=>{
     console.log(socket.id);
 
@@ -55,7 +74,9 @@ io.on('connection',socket=>{
     socket.on('join-room', (room, callbackFn)=>{
         socket.join(room);
         callbackFn(`Joined ${room}`);
-    })
+    });
+
+    socket.on('ping', n=>console.log(n))
 })
 
 // /* https://admin.socket.io >> 상태확인 

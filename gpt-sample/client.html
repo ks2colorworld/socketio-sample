@@ -1,0 +1,16 @@
+<!-- 참조 사이트 : https://chat.openai.com/chat -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+// Send the current character's position to the server
+function updatePosition(position) {
+    socket.emit('update-position', position);
+}
+
+// Receive updated position of all characters from the server
+socket.on('update-position', (characters) => {
+    // Handle the updated position of characters
+    console.log(characters);
+});
+</script>

@@ -1,154 +1,311 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Socket.IO chat</title>
-    <style>
-      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
-      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 15.73rem; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-      #input:focus { outline: none; }
-      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-      
-      #room-div { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 3; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-      #room-input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-      #room-input:focus { outline: none; }
-      #room-div > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+<head>
+  <meta charset="utf-8">
+  <title>Socket.IO chat</title>
+  <style>
+    body {
+      margin: 0;
+      padding-bottom: 3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages > li { padding: 0.5rem 1rem; }
-      #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+    * {
+      box-sizing: border-box;
+    }
 
+    /* 좌측 상단 */
+    #user-list {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: calc(100% - 100px);
+      width: 350px;
+    }
+
+    #user-list>li {
+      padding: 0.5rem 1rem;
+    }
+
+    #user-list>li:nth-child(odd) {
+      background: #efefef;
+    }
+
+
+    /* 우측 상단 */
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      position: fixed;
+      top: 0;
+      left: 350px;
+      border-left: 1px solid #dddddd;
+      padding: 10px;
+      height: calc(100% - 100px);
+      width: calc(100% - 350px);
+    }
+
+    #messages>li {
+      padding: 0.5rem 1rem;
+    }
+
+    #messages>li:nth-child(odd) {
+      background: #efefef;
+    }
+
+
+     /* 좌측 하단 */
+     .token-wrap {
+      position: fixed;
+      bottom: 0;
+      left: 350px;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 10px;
+      width: calc(100% - 350px);
+      border-left: 1px solid #999;
+    }
+
+    .token-wrap #token-input {
+      width: calc(100% - 190px);
+      height: 30px;
+
+    }
+
+    .token-wrap #connect-button,
+    .token-wrap #disconnect-button {
+      height: 30px;
+      width: 90px;
+    }
+
+    #form {
+      padding: 0.25rem;
+      display: flex;
+      height: 3rem;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+
+
+    #input {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+    }
+
+    #input:focus {
+      outline: none;
+    }
+
+    #form>button {
+      background: #333;
+      border: none;
+      padding: 0 1rem;
+      margin: 0.25rem;
+      border-radius: 3px;
+      outline: none;
+      color: #fff;
+    }
+
+
+    /* 우측 하단 */
+    .room-wrap {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 350px;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 10px;
+    }
+
+    .room-wrap .room-btns button {
+      width: 40px;
+      height: 30px;
+    }
+
+    #room-div {
+      display: flex;
+      height: 3rem;
+      padding: 0.25rem 0;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+
+    #room-input {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+    }
+
+    #room-input:focus {
+      outline: none;
+    }
+
+    #room-div>button {
+      background: #333;
+      border: none;
+      padding: 0 1rem;
+      margin: 0.25rem;
+      border-radius: 3px;
+      outline: none;
+      color: #fff;
+    }
+       
+  </style>
+</head>
+
+<body>
+  <!-- 좌측 상단 -->
+  <ui id="user-list"></ui>
+
+  <!-- 우측 상단 -->
+  <ul id="messages"></ul>
+
+
+  <!-- 좌측 하단 -->
+  <div class="room-wrap">
+    <div class="room-btns">
+      Room :
+      <button id="room-join-a-button">A</button>
+      <button id="room-join-b-button">B</button>
+      <button id="room-join-c-button">C</button>
+
+      / Count :
+      <span id="user-list-emit-count-input" > 0</span>,
+      <span id="messages-emit-count-input" >0</span>
+    </div>
     <div id="room-div" action="">
       <input id="room-input" autocomplete="off" /><button id="room-button">Join</button>
     </div>
+  </div>
 
-    <ui id="user-list"></ui>
-    <button id="room-join-a-button">A</button>
-    <button id="room-join-b-button">B</button>
-    <button id="room-join-c-button">C</button>
-    <input id="token-input" type="text"/>
+  <!-- 우측 하단 -->
+  <div class="token-wrap">
+    <input id="token-input" type="text" />
     <button id="connect-button">connect</button>
     <button id="disconnect-button">disconnect</button>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+  </div>
 
-    <input id="user-list-emit-count-input" type="text"/>
-    <input id="messages-emit-count-input" type="text"/>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io('http://localhost:3000');
-  var userSocket = io('http://localhost:3000/user'); // no token 
-  // var userSocket = io('http://localhost:3000/user', {auth:{token:'TestToken'}}); // with token 
 
-  userSocket.on('connect_error', (error)=>{ 
-    displayMessage(error)
-  })
-  
-  socket.on('connect', ()=>{
-    displayMessage(`You connected with id: ${socket.id}`)
-  });
 
-  /* (1)
-  socket.emit('custom-event', 10, 'Hi', {a:'a'});
-  //  */
 
-  socket.on('receive-message', (message)=>{
-    displayMessage(message);
-  })
-  
-  var messages = document.getElementById('messages');
-  var form = document.getElementById('form');
-  var input = document.getElementById('input');
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io('http://localhost:3000');
+    var userSocket = io('http://localhost:3000/user'); // no token 
+    // var userSocket = io('http://localhost:3000/user', {auth:{token:'TestToken'}}); // with token 
 
-  var roomInput = document.getElementById ("room-input");
-  var joinRoomButton = document.getElementById("room-button");
-  /* 
-    <ui id="user-list"></ui>
-    <input id="token-input" type="text"/>
-    <button id="connect-button">connect</button>
-    <button id="disconnect-button">disconnect</button>
-    <button id="room-join-a-button">A</button>
-    <button id="room-join-b-button">B</button>
-    <button id="room-join-c-button">C</button>
-   */
-  var userList = document.getElementById("user-list");
-  var tokenInput = document.getElementById("token-input");
-  var connectButton = document.getElementById("connect-button");
-  var disconnectButton = document.getElementById("disconnect-button");
-  var joinRoomAButton = document.getElementById("room-join-a-button");
-  var joinRoomBButton = document.getElementById("room-join-b-button");
-  var joinRoomCButton = document.getElementById("room-join-c-button");
+    userSocket.on('connect_error', (error) => {
+      displayMessage(error)
+    })
 
-  // 메시지 보내기
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
+    socket.on('connect', () => {
+      displayMessage(`You connected with id: ${socket.id}`)
+    });
 
-    const message = input.value;
-    const room = roomInput.value;
+    /* (1)
+    socket.emit('custom-event', 10, 'Hi', {a:'a'});
+    //  */
 
-    if (message === "") return
-    displayMessage(message);
+    socket.on('receive-message', (message) => {
+      displayMessage(message);
+    })
 
-    // You connected with id: zuwQG7Pg9GpBQasSAAAJ << socket.id 
-    socket.emit('send-message', message, room); // add room value / if room value === socket.id >> send private message 
+    var messages = document.getElementById('messages');
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
 
-    input.value = "";
-  });
+    var roomInput = document.getElementById("room-input");
+    var joinRoomButton = document.getElementById("room-button");
+    /* 
+      <ui id="user-list"></ui>
+      <input id="token-input" type="text"/>
+      <button id="connect-button">connect</button>
+      <button id="disconnect-button">disconnect</button>
+      <button id="room-join-a-button">A</button>
+      <button id="room-join-b-button">B</button>
+      <button id="room-join-c-button">C</button>
+     */
+    var userList = document.getElementById("user-list");
+    var tokenInput = document.getElementById("token-input");
+    var connectButton = document.getElementById("connect-button");
+    var disconnectButton = document.getElementById("disconnect-button");
+    var joinRoomAButton = document.getElementById("room-join-a-button");
+    var joinRoomBButton = document.getElementById("room-join-b-button");
+    var joinRoomCButton = document.getElementById("room-join-c-button");
 
-  function socketEmitJoinRoom(room) {
-	    console.log(room);
-	    socket.emit('join-room', room, (message)=>{
-	      displayMessage(message);
-	    });
-  }
+    // 메시지 보내기
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
 
-  joinRoomButton.addEventListener("click", () => {
-    const room = roomInput.value;
-    socketEmitJoinRoom(room);
-  });
+      const message = input.value;
+      const room = roomInput.value;
 
-  function displayMessage (message) {
-    var item = document.createElement('li');
-    item.textContent = message;
-    messages.appendChild(item);
-    window.scrollTo(0, document.body.scrollHeight);
-  }
+      if (message === "") return
+      displayMessage(message);
 
-  connectButton.addEventListener('click', ()=>{
-    const token = tokenInput.value;
-    if (token === '') {
-      return;
+      // You connected with id: zuwQG7Pg9GpBQasSAAAJ << socket.id 
+      socket.emit('send-message', message, room); // add room value / if room value === socket.id >> send private message 
+
+      input.value = "";
+    });
+
+    function socketEmitJoinRoom(room) {
+      console.log(room);
+      socket.emit('join-room', room, (message) => {
+        displayMessage(message);
+      });
     }
 
-    userSocket = io('http://localhost:3000/user', {auth:{token:token}});
-  })
+    joinRoomButton.addEventListener("click", () => {
+      const room = roomInput.value;
+      socketEmitJoinRoom(room);
+    });
 
-  // c : connect / d : disconnect
-  document.addEventListener('keydown',(e)=>{
-    if (e.target.matches('input')) {
-      return;
+    function displayMessage(message) {
+      var item = document.createElement('li');
+      item.textContent = message;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
     }
-    if (e.key === 'c') {
-      socket.connect();
-    }
-    if (e.key === 'd') {
-      socket.disconnect();
-    }
-  });
 
-  let count = 0;
-  setInterval(() => {
-    // volatile : 진행시간 계속 유지
-    // socket.volatile.emit('ping', ++count)
-  }, 1000);
-</script>
+    connectButton.addEventListener('click', () => {
+      const token = tokenInput.value;
+      if (token === '') {
+        return;
+      }
 
-  </body>
+      userSocket = io('http://localhost:3000/user', { auth: { token: token } });
+    })
+
+    // c : connect / d : disconnect
+    document.addEventListener('keydown', (e) => {
+      if (e.target.matches('input')) {
+        return;
+      }
+      if (e.key === 'c') {
+        socket.connect();
+      }
+      if (e.key === 'd') {
+        socket.disconnect();
+      }
+    });
+
+    let count = 0;
+    setInterval(() => {
+      // volatile : 진행시간 계속 유지
+      // socket.volatile.emit('ping', ++count)
+    }, 1000);
+  </script>
+
+</body>
+
 </html>

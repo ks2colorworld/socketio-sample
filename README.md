@@ -4,6 +4,7 @@ https://socket.io/get-started/chat
 
 ```
 cd _origin_tutorial
+npm i
 node index.js
 ```
 
@@ -18,11 +19,13 @@ pm2 start index.js --watch
 ## 클라이언트 소스는 js 소스만 참고할 것 
 ```
 cd client
+npm i
 npm run dev
 ```
 
 ```
 cd server
+npm i
 npm run dev
 ```
 

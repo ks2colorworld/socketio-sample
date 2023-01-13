@@ -1,7 +1,13 @@
 var qs = getQueryStringObject();
 var token = qs.token; 
+var initRoomName = qs.room;
 
-var socket = io('http://localhost:3000');
+// console.log(initRoomName);
+
+// var socket = io('http://localhost:3000');
+var socket = io('http://localhost:3000', {auth:{token:token}});
+
+/* namespace : /user
 // var userSocket = io('http://localhost:3000/user'); // no token 
 var userSocket = io('http://localhost:3000/user', {auth:{token:token}}); // with token 
 
@@ -13,6 +19,7 @@ userSocket.on('connect', ()=>{
 userSocket.on('connect_error', (error) => {
   displayMessage(error)
 })
+// */
 
 socket.on('connect', () => {
   displayMessage(`You connected with id: ${socket.id}`)
@@ -43,10 +50,12 @@ var joinRoomButton = document.getElementById("room-button");
   */
 var userList = document.getElementById("user-list");
 var tokenInput = document.getElementById("token-input");
+tokenInput.value = token;
+
 var connectButton = document.getElementById("connect-button");
 var disconnectButton = document.getElementById("disconnect-button");
 var joinRoomAButton = document.getElementById("room-join-a-button");
-var joinRoomBButton = document.getElementById("room-join-b-button");
+var joinRoomBButton = document.getElementById("room-join-b-button");
 var joinRoomCButton = document.getElementById("room-join-c-button");
 
 // 메시지 보내기
@@ -65,18 +74,18 @@ form.addEventListener('submit', function (e) {
   input.value = "";
 });
 
-joinRoomButton.addEventListener("click", () => {
-  const room = roomInput.value;
-  socketEmitJoinRoom(room);
-});
+joinRoomButton.addEventListener("click", joinRoomEventHander);
+joinRoomAButton.addEventListener("click", joinRoomEventHander);
+joinRoomBButton.addEventListener("click", joinRoomEventHander);
+joinRoomCButton.addEventListener("click", joinRoomEventHander);
 
 connectButton.addEventListener('click', () => {
   const token = tokenInput.value;
   if (token === '') {
     return;
   }
-  userSocket.disconnect();
-  userSocket = io('http://localhost:3000/user', { auth: { token: token } });
+  // userSocket.disconnect();
+  // userSocket = io('http://localhost:3000/user', { auth: { token: token } });
 })
 
 // c : connect / d : disconnect
@@ -96,12 +105,17 @@ let count = 0;
 setInterval(() => {
   // volatile : 진행시간 계속 유지
   // socket.volatile.emit('ping', ++count)
+  // socket.emit('ping', ++count)
 }, 1000);
 
+if(initRoomName){
 
+  roomInput.value = initRoomName;
+  socketEmitJoinRoom(initRoomName);
+}
 
 function getQueryStringObject() {
-  var a = window.location.search.substr(1).split('&');
+  var a = window.location.search.substring(1).split('&');
   if (a == "") return {};
   var b = {};
   for (var i = 0; i < a.length; ++i) {
@@ -114,7 +128,6 @@ function getQueryStringObject() {
   return b;
 }
 
-
 function displayMessage(message) {
   var item = document.createElement('li');
   item.textContent = message;
@@ -122,8 +135,39 @@ function displayMessage(message) {
   window.scrollTo(0, document.body.scrollHeight);
 }
 
+function joinRoomEventHander(e) {
+  e.preventDefault();
+  // console.log(e.target.id);
+  let room = '';
+
+  switch (e.target.id) {
+    case 'room-button':
+      room = roomInput.value;
+      if(!room) {
+        console.log('room is blank');
+        return;
+      }
+      break;
+      
+    case 'room-join-a-button':
+      room = 'roomA';
+      break;
+    case 'room-join-b-button':
+      room = 'roomB';
+      break;
+    case 'room-join-c-button':
+      room = 'roomC';
+      break;
+      default:
+      return;
+  }
+
+  roomInput.value = room;
+  socketEmitJoinRoom(room);
+}
+
 function socketEmitJoinRoom(room) {
-  console.log(room);
+  // console.log(room);
   socket.emit('join-room', room, (message) => {
     displayMessage(message);
   });

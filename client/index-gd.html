@@ -15,13 +15,31 @@
       box-sizing: border-box;
     }
 
-    /* 좌측 상단 */
-    #user-list {
+    /* 최상단 */
+    .top-header {
       position: fixed;
       top: 0;
       left: 0;
-      height: calc(100% - 100px);
+      height: 80px;
+      width: 100%;
+      padding: 10px;
+    }
+    .top-header textarea {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 좌측 상단 */
+    #user-list {
+      list-style-type: none;
+      position: fixed;
+      top: 80px;
+      left: 0;
+      margin: 0;
+      padding: 0;
+      height: calc(100% - 180px);
       width: 350px;
+      overflow: auto;
     }
 
     #user-list>li {
@@ -39,12 +57,12 @@
       margin: 0;
       padding: 0;
       position: fixed;
-      top: 0;
+      top: 80px;
       left: 350px;
       border-left: 1px solid #dddddd;
-      padding: 10px;
-      height: calc(100% - 100px);
+      height: calc(100% - 180px);
       width: calc(100% - 350px);
+      overflow: auto;
     }
 
     #messages>li {
@@ -56,8 +74,8 @@
     }
 
 
-     /* 좌측 하단 */
-     .token-wrap {
+    /* 좌측 하단 */
+    .token-wrap {
       position: fixed;
       bottom: 0;
       left: 350px;
@@ -122,8 +140,13 @@
     }
 
     .room-wrap .room-btns button {
+      width: 30px;
+      height: 30px;
+    }
+    .room-wrap .room-btns input {
       width: 40px;
       height: 30px;
+      text-align: center;
     }
 
     #room-div {
@@ -155,16 +178,59 @@
       outline: none;
       color: #fff;
     }
-       
   </style>
 </head>
 
 <body>
+  <!-- 최상단 -->
+<div class="top-header">
+  <textarea  id="location" ></textarea>
+</div>
+
   <!-- 좌측 상단 -->
-  <ui id="user-list"></ui>
+  <ui id="user-list">
+
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+  </ui>
 
   <!-- 우측 상단 -->
-  <ul id="messages"></ul>
+  <ul id="messages">
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+    <li>A</li>
+  </ul>
 
 
   <!-- 좌측 하단 -->
@@ -176,8 +242,8 @@
       <button id="room-join-c-button">C</button>
 
       / Count :
-      <span id="user-list-emit-count-input" > 0</span>,
-      <span id="messages-emit-count-input" >0</span>
+      <input id="user-list-emit-count-input" readonly/> ,
+      <input id="messages-emit-count-input" readonly /> 
     </div>
     <div id="room-div" action="">
       <input id="room-input" autocomplete="off" /><button id="room-button">Join</button>

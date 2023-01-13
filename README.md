@@ -12,23 +12,31 @@ node index.js
 pm2 start index.js --watch
 ```
 
-# add other feature 
+# (Main sample) add other feature 
 
 - 참고자료 : https://youtu.be/ZKEqqIO7n-k
 
-## 클라이언트 소스는 js 소스만 참고할 것 
-```
-cd client
-npm i
-npm run dev
-```
-
+## http://localhost:3000
 ```
 cd server
 npm i
 npm run dev
 ```
 
+## http://localhost:8080 (소스 변경시 브라우저 자동 새로고침)
+
+### 클라이언트 소스는 client.js 소스만 참고할 것 
+```
+cd client
+npm i
+npm run dev
+```
+- test url sample 
+```
+http://localhost:8080/
+http://localhost:8080/?token=user1111
+http://localhost:8080/?token=user1111&room=roomA
+```
 
 # Homework
 

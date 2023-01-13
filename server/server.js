@@ -200,6 +200,7 @@ function userDisconnect(userId){
     })
 }
 
+/** 사용자를 특정룸에 join하고, rooms Map 데이터를 업데이트 한다. */
 function addUserToRoom(socket, room, userId) {
     if(!room) {
         console.log(`room = ${room}; >>  return;`);

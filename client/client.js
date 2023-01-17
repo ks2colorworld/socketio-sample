@@ -23,6 +23,16 @@ userSocket.on('connect_error', (error) => {
 
 socket.on('connect', () => {
   displayMessage(`You connected with id: ${socket.id}`)
+  setTimeout(() => {
+    const initRoomName = roomInput.value;
+    if(initRoomName){
+      socketEmitJoinRoom(initRoomName);
+    }
+  }, 1000);
+});
+
+socket.on('disconnect', () => {
+  displayMessage(`You disconnected`)
 });
 
 /* (1)
@@ -31,6 +41,11 @@ socket.emit('custom-event', 10, 'Hi', {a:'a'});
 
 socket.on('receive-message', (message) => {
   displayMessage(message);
+})
+
+socket.on('receive-userlist', _userList=>{
+  // console.log(_userList);
+  displayUserListInTheRoom(_userList, userList);
 })
 
 var messages = document.getElementById('messages');
@@ -50,13 +65,40 @@ var joinRoomButton = document.getElementById("room-button");
   */
 var userList = document.getElementById("user-list");
 var tokenInput = document.getElementById("token-input");
-tokenInput.value = token;
+tokenInput.value = token || '';
 
 var connectButton = document.getElementById("connect-button");
 var disconnectButton = document.getElementById("disconnect-button");
 var joinRoomAButton = document.getElementById("room-join-a-button");
 var joinRoomBButton = document.getElementById("room-join-b-button");
 var joinRoomCButton = document.getElementById("room-join-c-button");
+
+disconnectButton.addEventListener('click', e=>{
+  e.preventDefault();
+
+  if(!socket.connected) return;
+  socket.disconnect();
+})
+
+connectButton.addEventListener('click', e=>{
+  e.preventDefault();
+
+  if(socket.connected) return;
+  const newtoken = tokenInput.value;
+  // if (!newtoken) {
+  //   return;
+  // }
+
+  // 기존 접속 해제
+  // socket.disconnect();
+  // 토큰을 가지고 명시적으로 접속
+  // if(!socket.auth.token){
+  //   socket.auth.token = newtoken;
+  // }
+
+  socket.auth.token = newtoken || undefined;
+  socket.connect();
+})
 
 // 메시지 보내기
 form.addEventListener('submit', function (e) {
@@ -79,27 +121,33 @@ joinRoomAButton.addEventListener("click", joinRoomEventHander);
 joinRoomBButton.addEventListener("click", joinRoomEventHander);
 joinRoomCButton.addEventListener("click", joinRoomEventHander);
 
-connectButton.addEventListener('click', () => {
-  const token = tokenInput.value;
-  if (token === '') {
-    return;
-  }
-  // userSocket.disconnect();
-  // userSocket = io('http://localhost:3000/user', { auth: { token: token } });
-})
+// connectButton.addEventListener('click', () => {
+//   const token = tokenInput.value;
+//   if (token === '') {
+//     return;
+//   }
+//   // userSocket.disconnect();
+//   // userSocket = io('http://localhost:3000/user', { auth: { token: token } });
+// })
 
 // c : connect / d : disconnect
+
 document.addEventListener('keydown', (e) => {
   if (e.target.matches('input')) {
     return;
   }
   if (e.key === 'c') {
+    if(socket.connected) return;
     socket.connect();
   }
   if (e.key === 'd') {
+    if(!socket.connected) return;
     socket.disconnect();
   }
 });
+
+
+
 
 let count = 0;
 setInterval(() => {
@@ -108,11 +156,19 @@ setInterval(() => {
   // socket.emit('ping', ++count)
 }, 1000);
 
-if(initRoomName){
 
-  roomInput.value = initRoomName;
-  socketEmitJoinRoom(initRoomName);
-}
+
+// setTimeout(() => {
+  if(initRoomName){
+
+    roomInput.value = initRoomName;
+//     socketEmitJoinRoom(initRoomName);
+  }
+// }, 1000);
+
+
+
+
 
 function getQueryStringObject() {
   var a = window.location.search.substring(1).split('&');
@@ -129,10 +185,13 @@ function getQueryStringObject() {
 }
 
 function displayMessage(message) {
+  const ul = messages;
+  
   var item = document.createElement('li');
   item.textContent = message;
-  messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
+  ul.appendChild(item);
+  // window.scrollTo(0, document.body.scrollHeight);
+  ul.scrollTo(0,ul.scrollHeight);
 }
 
 function joinRoomEventHander(e) {
@@ -166,9 +225,49 @@ function joinRoomEventHander(e) {
   socketEmitJoinRoom(room);
 }
 
-function socketEmitJoinRoom(room) {
-  // console.log(room);
-  socket.emit('join-room', room, (message) => {
+function socketEmitJoinRoom(current_room) {
+  // console.log(current_room);
+  if(!socket.connected) {
+    displayMessage('You are disconnected !!')
+    return;
+  }
+  socket.emit('join-room', current_room, (message, ex_room, _userList) => {
     displayMessage(message);
+    // console.log(_userList);
+    displayUserListInTheRoom(_userList, userList);
+
+    if (!ex_room || current_room === ex_room) {
+      return;
+    }
+
+    socket.emit('leave-room-message', ex_room, (message)=>{
+      if(message) displayMessage(message);
+    })
   });
+}
+
+/** userList Object를 표시 */
+function displayUserListInTheRoom(_userList){
+  const ul = userList;
+
+  while (ul && ul.firstChild) {
+    // console.log(ul.firstChild);
+    ul.removeChild(ul.firstChild);
+  }
+
+  for (const id in _userList) {
+    if (Object.hasOwnProperty.call(_userList, id)) { 
+      // const element = obj[id]['name'];
+      // console.log(element);
+      // console.log(id);
+      // console.log('id.isConnected', obj[id]['isConnected']);
+      
+      const isConnected = _userList[id]['isConnected'];
+      var item = document.createElement('li');
+      item.textContent = id.concat(isConnected?'':' (자리비움)');
+      if(ul) ul.appendChild(item);
+    }
+  }
+
+  if(ul) ul.scrollTo(0,ul.scrollHeight);
 }

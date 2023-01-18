@@ -41,10 +41,6 @@ socket.on('disconnect', () => {
   removeAllUsersInList();
 });
 
-/* (1)
-socket.emit('custom-event', 10, 'Hi', {a:'a'});
-//  */
-
 socket.on('receive-message', (message) => {
   displayMessage(message);
 })
@@ -60,6 +56,9 @@ socket.on('receive-userlocation', _userList=>{
 })
 
 
+/* (1)
+socket.emit('custom-event', 10, 'Hi', {a:'a'});
+//  */
 
 
 

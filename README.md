@@ -27,7 +27,7 @@ npm run dev
 
 ### 클라이언트 소스는 client.js 소스만 참고할 것 
 ```
-cd client
+cd client
 npm i
 npm run dev
 ```

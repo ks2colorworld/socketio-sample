@@ -18,7 +18,7 @@ pm2 start index.js --watch
 
 ## http://localhost:3000
 ```
-cd server
+cd server
 npm i
 npm run dev
 ```

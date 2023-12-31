@@ -56,7 +56,7 @@ Here are some ideas to improve the application:
 - ### target branch name : [[deploy-version]](https://github.com/ks2colorworld/socketio-sample/tree/deploy-version)
 - client
     - https://socketio-client-ks.onrender.com/
-    - http://localhost:8080 (if you build & run locally)
+    - http://localhost:8080 (if you run locally - no need to build)
 
 - server (very slow when running for the first time)
     - (just check healthy)[https://socketio-server-colorworld.koyeb.app/](https://socketio-server-colorworld.koyeb.app/)

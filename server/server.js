@@ -34,7 +34,8 @@ const io = new Server(httpServer, {
   cors: {
     origin: [
         "http://localhost:8080",
-        "https://admin.socket.io"
+        "https://admin.socket.io",
+        "https://socketio-client-ks.onrender.com/"
     ],
     credentials: true
   }

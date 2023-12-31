@@ -24,7 +24,10 @@ const app = express();
 const httpServer = createServer(app);
 
 // CORS 설정
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 // Sample route
 app.get('/', (req, res) => {
     res.send('<h1>Socket.io Server is running</h1>');
@@ -32,11 +35,12 @@ app.get('/', (req, res) => {
 
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-        "http://localhost:8080",
-        "https://admin.socket.io",
-        "https://socketio-client-ks.onrender.com/"
-    ],
+    // origin: [
+    //     "http://localhost:8080",
+    //     "https://admin.socket.io",
+    //     "https://socketio-client-ks.onrender.com/"
+    //     ],
+        origin: true,
     credentials: true
   }
 });

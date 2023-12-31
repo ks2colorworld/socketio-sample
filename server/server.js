@@ -17,7 +17,18 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
 
-const httpServer = createServer();
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+const httpServer = createServer(app);
+
+// CORS 설정
+app.use(cors());
+// Sample route
+app.get('/', (req, res) => {
+    res.send('<h1>Socket.io Server is running</h1>');
+});
 
 const io = new Server(httpServer, {
   cors: {
@@ -29,7 +40,12 @@ const io = new Server(httpServer, {
   }
 });
 
-httpServer.listen(3000); // https://admin.socket.io 필수 설정 
+// httpServer.listen(3000); // https://admin.socket.io 필수 설정 
+
+const PORT = process.env.PORT || 3000;
+httpServer.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+}); // https://admin.socket.io 필수 설정 
 // */
 
 const users = new Map();

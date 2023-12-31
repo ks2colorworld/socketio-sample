@@ -51,3 +51,12 @@ Here are some ideas to improve the application:
 - Share your improvements!
 
 - https://socket.io/how-to/use-with-express-session 
+
+# Demo deployed : 
+- ### target branch name : [[deploy-version]](https://github.com/ks2colorworld/socketio-sample/tree/deploy-version)
+- client
+    - https://socketio-client-ks.onrender.com/
+    - http://localhost:8080 (if you build & run locally)
+
+- server (very slow when running for the first time)
+    - (just check healthy)[https://socketio-server-colorworld.koyeb.app/](https://socketio-server-colorworld.koyeb.app/)

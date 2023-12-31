@@ -3,7 +3,7 @@ var token = qs.token;
 var initRoomName = qs.room;
 
 // var socket = io('http://localhost:3000');
-var socket = io('http://localhost:3000', {auth:{token:token}});
+var socket = io('https://socketio-server-colorworld.koyeb.app', {auth:{token:token}});
 
 /* namespace : /user
   // var userSocket = io('http://localhost:3000/user'); // no token 

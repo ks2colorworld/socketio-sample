@@ -25,7 +25,7 @@ npm run dev
 
 ## http://localhost:8080 (소스 변경시 브라우저 자동 새로고침)
 
-### 클라이언트 소스는 client.js 소스만 참고할 것 
+### For client source, refer only to client.js source. - 클라이언트 소스는 client.js 소스만 참고할 것
 ```
 cd client
 npm i
@@ -59,4 +59,5 @@ Here are some ideas to improve the application:
     - http://localhost:8080 (if you run locally - no need to build)
 
 - server (very slow when running for the first time)
-    - (just check healthy)[https://socketio-server-colorworld.koyeb.app/](https://socketio-server-colorworld.koyeb.app/)
+    - (almost paused) ~[https://socketio-server-colorworld.koyeb.app/](https://socketio-server-colorworld.koyeb.app/)~
+    - (just check healthy >>)[https://socketio-server-n0cy.onrender.com/](https://socketio-server-n0cy.onrender.com/)
